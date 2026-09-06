@@ -37,8 +37,8 @@ function doPost(e) {
     MailApp.sendEmail({
       to: CONFIG.recipientEmail,
       replyTo: lead.email,
-      name: 'CertiPlan Website',
-      subject: 'New quote request — ' + lead.service,
+      name: 'CertiPlan Website Enquiries',
+      subject: '[CERTIPLAN WEBSITE] New quote request — ' + lead.service,
       body: plainText_(lead),
       htmlBody: emailHtml_(lead)
     });
@@ -77,6 +77,7 @@ function responsePage_(ok, message, requestId) {
 
   const html = '<!doctype html><html><body><script>' +
     'window.parent.postMessage(' + payload + ',"' + CONFIG.allowedOrigin + '");' +
+    'if(window.top!==window.parent){window.top.postMessage(' + payload + ',"' + CONFIG.allowedOrigin + '");}' +
     '<\/script></body></html>';
 
   return HtmlService.createHtmlOutput(html)
@@ -148,4 +149,3 @@ function safeError_(error) {
   ];
   return allowed.includes(message) ? message : 'We could not send your enquiry. Please try again or call us.';
 }
-

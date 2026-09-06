@@ -648,12 +648,26 @@ if (enquiryForm) {
   const status = enquiryForm.querySelector('.form-status');
   const fields = enquiryForm.querySelector('.form-fields');
   const success = enquiryForm.querySelector('.form-success');
+  const resultFrame = document.querySelector('iframe[name="enquiry-result-frame"]');
   const requestIdInput = enquiryForm.elements.request_id;
   const startedAtInput = enquiryForm.elements.started_at;
   let pendingId = '';
+  let submittedAt = 0;
   let submissionTimer;
 
   const resetTiming = () => { startedAtInput.value = String(Date.now()); };
+  const showSuccess = () => {
+    if (!pendingId) return;
+    clearTimeout(submissionTimer);
+    submitButton.disabled = false;
+    buttonLabel.textContent = 'Send enquiry';
+    enquiryForm.reset();
+    fields.hidden = true;
+    success.hidden = false;
+    success.focus();
+    pendingId = '';
+    submittedAt = 0;
+  };
   resetTiming();
 
   enquiryForm.addEventListener('submit', event => {
@@ -665,6 +679,7 @@ if (enquiryForm) {
     }
 
     pendingId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+    submittedAt = Date.now();
     requestIdInput.value = pendingId;
     submitButton.disabled = true;
     buttonLabel.textContent = 'Sending…';
@@ -678,7 +693,14 @@ if (enquiryForm) {
       status.textContent = 'This is taking longer than expected. Please try again or contact us directly.';
       status.classList.add('is-error');
       pendingId = '';
-    }, 20000);
+    }, 30000);
+  });
+
+  // Apps Script responses can be wrapped by a Google iframe. Its completed load
+  // still confirms that Google accepted and processed the POST request.
+  if (resultFrame) resultFrame.addEventListener('load', () => {
+    if (!pendingId || Date.now() - submittedAt < 500) return;
+    window.setTimeout(showSuccess, 250);
   });
 
   window.addEventListener('message', event => {
@@ -691,15 +713,13 @@ if (enquiryForm) {
     buttonLabel.textContent = 'Send enquiry';
 
     if (result.ok) {
-      enquiryForm.reset();
-      fields.hidden = true;
-      success.hidden = false;
-      success.focus();
+      showSuccess();
     } else {
       status.textContent = result.message || 'We could not send your enquiry. Please try again.';
       status.classList.add('is-error');
     }
     pendingId = '';
+    submittedAt = 0;
   });
 
   enquiryForm.querySelector('.form-reset').addEventListener('click', () => {
