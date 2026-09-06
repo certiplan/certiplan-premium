@@ -1,6 +1,7 @@
 # CertiPlan enquiry mailer
 
 This Google Apps Script receives the public website form and sends a branded HTML email.
+The sender and recipient are resolved automatically from the Google account that deploys the web app; no mailbox address is stored in the code.
 
 ## Deploy
 
@@ -13,4 +14,4 @@ This Google Apps Script receives the public website form and sends a branded HTM
 7. Replace `YOUR_APPS_SCRIPT_WEB_APP_URL` in the website's `index.html` with that URL.
 
 When changing the script later, create a new deployment version while keeping the same deployment URL.
-
+To transfer ownership to another person, copy the project to their Google account and let them deploy it as themselves.

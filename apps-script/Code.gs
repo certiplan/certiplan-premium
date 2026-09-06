@@ -1,5 +1,4 @@
 const CONFIG = Object.freeze({
-  recipientEmail: 'mmdv3408@gmail.com',
   allowedOrigin: 'https://mmdvv3408.github.io',
   siteUrl: 'https://mmdvv3408.github.io/certiplan-premium/'
 });
@@ -24,6 +23,11 @@ function doPost(e) {
       throw new Error('The enquiry service is temporarily unavailable.');
     }
 
+    // A web app deployed as "Execute as me" runs as its deployer. This keeps
+    // account ownership portable without storing an email address in the code.
+    const deployerEmail = Session.getEffectiveUser().getEmail();
+    if (!deployerEmail) throw new Error('The deployment owner could not be identified.');
+
     const lead = {
       name: clean_(values.name, 120),
       phone: clean_(values.phone, 60),
@@ -35,7 +39,7 @@ function doPost(e) {
     };
 
     MailApp.sendEmail({
-      to: CONFIG.recipientEmail,
+      to: deployerEmail,
       replyTo: lead.email,
       name: 'CertiPlan Website Enquiries',
       subject: '[CERTIPLAN WEBSITE] New quote request — ' + lead.service,
@@ -142,6 +146,7 @@ function safeError_(error) {
     'Invalid submission.',
     'Please wait before sending another enquiry.',
     'The enquiry service is temporarily unavailable.',
+    'The deployment owner could not be identified.',
     'Please refresh the page and try again.',
     'Please complete all required fields.',
     'Please enter a valid email address.',
