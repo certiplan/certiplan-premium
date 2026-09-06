@@ -1,6 +1,6 @@
 const CONFIG = Object.freeze({
-  allowedOrigin: 'https://mmdvv3408.github.io',
-  siteUrl: 'https://mmdvv3408.github.io/certiplan-premium/'
+  allowedOrigins: ['https://certiplan.co.uk', 'https://www.certiplan.co.uk', 'https://mmdvv3408.github.io'],
+  siteUrl: 'https://certiplan.co.uk/'
 });
 
 function doGet() {
@@ -88,9 +88,10 @@ function responsePage_(ok, message, requestId) {
     requestId: String(requestId || '')
   }).replace(/</g, '\\u003c');
 
+  const origins = JSON.stringify(CONFIG.allowedOrigins);
   const html = '<!doctype html><html><body><script>' +
-    'window.parent.postMessage(' + payload + ',"' + CONFIG.allowedOrigin + '");' +
-    'if(window.top!==window.parent){window.top.postMessage(' + payload + ',"' + CONFIG.allowedOrigin + '");}' +
+    '(' + origins + ').forEach(function(origin){window.parent.postMessage(' + payload + ',origin);' +
+    'if(window.top!==window.parent){window.top.postMessage(' + payload + ',origin);}});' +
     '<\/script></body></html>';
 
   return HtmlService.createHtmlOutput(html)
