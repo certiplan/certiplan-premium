@@ -7,6 +7,17 @@ function doGet() {
   return responsePage_(false, 'This endpoint accepts form submissions only.', '');
 }
 
+/**
+ * Run once from the Apps Script editor before deploying. The owner's address is
+ * stored privately in Script Properties and is never published in site code.
+ */
+function setup() {
+  const ownerEmail = Session.getActiveUser().getEmail();
+  if (!ownerEmail) throw new Error('Google could not identify the signed-in project owner.');
+  PropertiesService.getScriptProperties().setProperty('DEPLOYER_EMAIL', ownerEmail);
+  return 'CertiPlan enquiries will be delivered to ' + ownerEmail;
+}
+
 function doPost(e) {
   const values = (e && e.parameter) || {};
   const requestId = clean_(values.request_id, 80);
@@ -23,10 +34,8 @@ function doPost(e) {
       throw new Error('The enquiry service is temporarily unavailable.');
     }
 
-    // A web app deployed as "Execute as me" runs as its deployer. This keeps
-    // account ownership portable without storing an email address in the code.
-    const deployerEmail = Session.getEffectiveUser().getEmail();
-    if (!deployerEmail) throw new Error('The deployment owner could not be identified.');
+    const deployerEmail = PropertiesService.getScriptProperties().getProperty('DEPLOYER_EMAIL');
+    if (!deployerEmail) throw new Error('The enquiry service has not been set up yet.');
 
     const lead = {
       name: clean_(values.name, 120),
@@ -146,7 +155,7 @@ function safeError_(error) {
     'Invalid submission.',
     'Please wait before sending another enquiry.',
     'The enquiry service is temporarily unavailable.',
-    'The deployment owner could not be identified.',
+    'The enquiry service has not been set up yet.',
     'Please refresh the page and try again.',
     'Please complete all required fields.',
     'Please enter a valid email address.',
