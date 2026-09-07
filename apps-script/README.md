@@ -1,7 +1,7 @@
 # CertiPlan enquiry mailer
 
 This Google Apps Script receives the public website form and sends a branded HTML email.
-The message is sent by the Google account that owns the deployment to `Info@certiplan.co.uk`. It uses Google Workspace's generic no-reply sender, appears as `CertiPlan Website Leads`, and uses the short subject `New enquiry — Customer Name`. Use the `Reply to Customer Name` button inside the email to reply directly to the customer.
+The message is sent by the Google account that owns the deployment to `Info@certiplan.co.uk`. It uses Google Workspace's generic no-reply sender, appears as `CertiPlan Website Leads`, and uses the short subject `New enquiry: Customer Name`. Use the `Reply to Customer Name` button inside the email to reply directly to the customer.
 
 ## Deploy
 

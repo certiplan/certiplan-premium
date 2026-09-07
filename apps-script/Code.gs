@@ -54,7 +54,7 @@ function doPost(e) {
       to: CONFIG.recipientEmail,
       name: CONFIG.senderName,
       noReply: true,
-      subject: 'New enquiry — ' + lead.name,
+      subject: 'New enquiry: ' + lead.name,
       body: plainText_(lead),
       htmlBody: emailHtml_(lead)
     });
