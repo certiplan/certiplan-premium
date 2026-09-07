@@ -1,7 +1,7 @@
 # CertiPlan enquiry mailer
 
 This Google Apps Script receives the public website form and sends a branded HTML email.
-The sender and recipient are registered from the signed-in project owner during setup; no mailbox address is stored in the code or GitHub.
+The message is sent by the Google account that owns the deployment to `Info@certiplan.co.uk`. It appears as `CertiPlan Website Leads`, uses the short subject `New enquiry — Customer Name`, and replies go directly to the customer.
 
 ## Deploy
 
@@ -16,3 +16,5 @@ The sender and recipient are registered from the signed-in project owner during 
 
 When changing the script later, create a new deployment version while keeping the same deployment URL.
 To transfer ownership to another person, copy the project to their Google account and let them deploy it as themselves.
+
+If the deployment owner is also `Info@certiplan.co.uk`, Gmail may label the sender as `me` because the mailbox is sending a message to itself. The custom sender name is still included in the message headers. To avoid the `me` label completely, send from a different Google account while keeping `Info@certiplan.co.uk` as the recipient.

@@ -1,6 +1,8 @@
 const CONFIG = Object.freeze({
-  allowedOrigins: ['https://certiplan.co.uk', 'https://www.certiplan.co.uk', 'https://mmdvv3408.github.io'],
-  siteUrl: 'https://certiplan.co.uk/'
+  allowedOrigins: ['https://certiplan.co.uk', 'https://www.certiplan.co.uk', 'https://certiplan.github.io'],
+  siteUrl: 'https://certiplan.co.uk/',
+  recipientEmail: 'Info@certiplan.co.uk',
+  senderName: 'CertiPlan Website Leads'
 });
 
 function doGet() {
@@ -8,14 +10,15 @@ function doGet() {
 }
 
 /**
- * Run once from the Apps Script editor before deploying. The owner's address is
- * stored privately in Script Properties and is never published in site code.
+ * Run once from the Apps Script editor before deploying. Messages are sent by
+ * the signed-in account to the public CertiPlan inbox configured above.
  */
 function setup() {
   const ownerEmail = Session.getActiveUser().getEmail();
   if (!ownerEmail) throw new Error('Google could not identify the signed-in project owner.');
-  PropertiesService.getScriptProperties().setProperty('DEPLOYER_EMAIL', ownerEmail);
-  return 'CertiPlan enquiries will be delivered to ' + ownerEmail;
+  PropertiesService.getScriptProperties().setProperty('SENDER_EMAIL', ownerEmail);
+  MailApp.getRemainingDailyQuota();
+  return 'CertiPlan enquiries will be sent by ' + ownerEmail + ' to ' + CONFIG.recipientEmail;
 }
 
 function doPost(e) {
@@ -34,8 +37,8 @@ function doPost(e) {
       throw new Error('The enquiry service is temporarily unavailable.');
     }
 
-    const deployerEmail = PropertiesService.getScriptProperties().getProperty('DEPLOYER_EMAIL');
-    if (!deployerEmail) throw new Error('The enquiry service has not been set up yet.');
+    const senderEmail = PropertiesService.getScriptProperties().getProperty('SENDER_EMAIL');
+    if (!senderEmail) throw new Error('The enquiry service has not been set up yet.');
 
     const lead = {
       name: clean_(values.name, 120),
@@ -48,10 +51,10 @@ function doPost(e) {
     };
 
     MailApp.sendEmail({
-      to: deployerEmail,
+      to: CONFIG.recipientEmail,
       replyTo: lead.email,
-      name: 'CertiPlan Website Enquiries',
-      subject: '[CERTIPLAN WEBSITE] New quote request — ' + lead.service,
+      name: CONFIG.senderName,
+      subject: 'New enquiry — ' + lead.name,
       body: plainText_(lead),
       htmlBody: emailHtml_(lead)
     });
