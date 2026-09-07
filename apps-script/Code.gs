@@ -52,8 +52,8 @@ function doPost(e) {
 
     MailApp.sendEmail({
       to: CONFIG.recipientEmail,
-      replyTo: lead.email,
       name: CONFIG.senderName,
+      noReply: true,
       subject: 'New enquiry — ' + lead.name,
       body: plainText_(lead),
       htmlBody: emailHtml_(lead)

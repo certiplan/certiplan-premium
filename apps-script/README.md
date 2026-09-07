@@ -1,7 +1,7 @@
 # CertiPlan enquiry mailer
 
 This Google Apps Script receives the public website form and sends a branded HTML email.
-The message is sent by the Google account that owns the deployment to `Info@certiplan.co.uk`. It appears as `CertiPlan Website Leads`, uses the short subject `New enquiry — Customer Name`, and replies go directly to the customer.
+The message is sent by the Google account that owns the deployment to `Info@certiplan.co.uk`. It uses Google Workspace's generic no-reply sender, appears as `CertiPlan Website Leads`, and uses the short subject `New enquiry — Customer Name`. Use the `Reply to Customer Name` button inside the email to reply directly to the customer.
 
 ## Deploy
 
@@ -17,4 +17,4 @@ The message is sent by the Google account that owns the deployment to `Info@cert
 When changing the script later, create a new deployment version while keeping the same deployment URL.
 To transfer ownership to another person, copy the project to their Google account and let them deploy it as themselves.
 
-If the deployment owner is also `Info@certiplan.co.uk`, Gmail may label the sender as `me` because the mailbox is sending a message to itself. The custom sender name is still included in the message headers. To avoid the `me` label completely, send from a different Google account while keeping `Info@certiplan.co.uk` as the recipient.
+The `noReply` option is available only to Google Workspace accounts. It prevents Gmail from treating the message as mail sent by the inbox to itself. Google ignores the standard `replyTo` field in this mode, so replies must use the customer button provided inside the branded email.
