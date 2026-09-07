@@ -154,10 +154,14 @@ body{overflow-x:hidden}.site-header{transition:background .35s ease,box-shadow .
 
 /* --- Official CertiPlan identity --- */
 .brand-logo{display:block;width:220px;height:auto}.footer-brand .brand-logo{width:210px}@media(max-width:650px){.brand-logo{width:185px}.footer-brand .brand-logo{width:205px}}
+.nav-login{padding:9px 13px;border:1px solid #cbdbe5;border-radius:9px;color:var(--navy);font-weight:800}.nav-login:hover{border-color:var(--teal);background:#eefaf7;color:var(--navy)!important}
+.metrics-shell{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.metrics-shell{grid-template-columns:repeat(3,1fr)}.metric:nth-child(3),.metric:nth-child(4){border-top:0}}
+@media(max-width:650px){.metrics-shell{grid-template-columns:1fr}.metric+.metric{border-left:0;border-top:1px solid var(--line)!important}}
 
 </style>
 </head>
-<body translate="no">
+<body>
   <header class="site-header">
     <div class="container nav-wrap">
       <a class="brand" href="#top" aria-label="CertiPlan home">
@@ -168,6 +172,7 @@ body{overflow-x:hidden}.site-header{transition:background .35s ease,box-shadow .
         <a href="#services">Services</a><a href="#renewals">Renewal Reminders</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
+        <a class="nav-login" href="https://certiplandigitallogbook.co.uk/login" target="_blank" rel="noopener">Client Login</a>
         <a class="nav-phone" href="tel:02046411414">020 4641 1414</a>
         <a class="btn btn-sm" href="#contact">Get a Quote</a>
       </nav>
@@ -230,7 +235,6 @@ body{overflow-x:hidden}.site-header{transition:background .35s ease,box-shadow .
     <section class="metrics" aria-label="CertiPlan highlights">
       <div class="container">
         <div class="metrics-shell reveal">
-          <div class="metric"><strong><span class="metric-counter" data-target="10">0</span><span class="metric-accent">+</span></strong><span>Property compliance services</span></div>
           <div class="metric"><strong>Residential</strong><span>Landlords & homeowners</span></div>
           <div class="metric"><strong>Commercial</strong><span>Agents, businesses & developments</span></div>
           <div class="metric"><strong>One team</strong><span>One point of contact + renewal tracking</span></div>
@@ -793,28 +797,6 @@ if (window.matchMedia('(pointer:fine)').matches) {
       card.style.setProperty('--my',`${e.clientY-r.top}px`);
     });
   });
-}
-
-// Count the real number of listed services when the metric becomes visible
-const counter = document.querySelector('.metric-counter');
-if (counter) {
-  const cObs = new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(!entry.isIntersecting) return;
-      const target = Number(counter.dataset.target || 10);
-      const start = performance.now();
-      const duration = 1600;
-      const animate = now => {
-        const p = Math.min(1,(now-start)/duration);
-        const eased = 1-Math.pow(1-p,4);
-        counter.textContent = Math.round(target*eased);
-        if(p<1) requestAnimationFrame(animate);
-      };
-      requestAnimationFrame(animate);
-      cObs.disconnect();
-    });
-  },{threshold:.6});
-  cObs.observe(counter);
 }
 
 // Gentle magnetic movement on primary buttons (desktop only)
